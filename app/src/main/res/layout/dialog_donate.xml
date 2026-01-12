@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="24dp"
+    android:background="@android:color/transparent">
+
+    <!-- 标题 -->
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/donate_title"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        android:gravity="center"
+        android:textColor="#333333"
+        android:layout_marginBottom="16dp"/>
+
+    <!-- 关闭按钮 -->
+    <ImageButton
+        android:contentDescription="@string/close"
+        android:id="@+id/btnClose"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:src="@android:drawable/ic_menu_close_clear_cancel"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        android:layout_gravity="end"
+        android:layout_marginBottom="16dp"/>
+
+    <!-- 微信二维码 -->
+    <ImageView
+        android:id="@+id/imgWechat"
+        android:layout_width="200dp"
+        android:layout_height="200dp"
+        android:src="@drawable/zanshang1"
+        android:scaleType="fitCenter"
+        android:layout_gravity="center"
+        android:contentDescription="@string/wechat_qr"
+        android:layout_marginBottom="8dp"/>
+
+    <!-- 支付宝二维码 -->
+    <ImageView
+        android:id="@+id/imgAlipay"
+        android:layout_width="200dp"
+        android:layout_height="200dp"
+        android:src="@drawable/zanshang2"
+        android:scaleType="fitCenter"
+        android:layout_gravity="center"
+        android:contentDescription="@string/alipay_qr"
+        android:layout_marginBottom="16dp"/>
+
+    <!-- 提示 -->
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/donate_hint"
+        android:textSize="14sp"
+        android:gravity="center"
+        android:textColor="#666666"/>
+</LinearLayout>

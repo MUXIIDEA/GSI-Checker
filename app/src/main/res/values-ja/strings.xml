@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">GSI チェッカー</string>
+    <string name="detect_gsi">GSIバージョンを検出</string>
+    <string name="detect_hint">上記のボタンをクリックして検出を開始</string>
+    <string name="copy_link">リンクをコピー</string>
+    <string name="open_dsu">DSUを開く</string>
+    <string name="donate">サポートする</string>
+    <string name="change_theme">テーマカラーを変更</string>
+
+    <!-- 赞赏弹窗专用 -->
+    <string name="donate_title">支払い方法を選択</string>
+    <string name="close">閉じる</string>
+    <string name="wechat_qr">WeChat QRコード</string>
+    <string name="alipay_qr">Alipay QRコード</string>
+    <string name="donate_hint">画像を長押ししてQRコードを保存</string>
+</resources>

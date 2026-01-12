@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">GSI Checker</string>
+    <string name="detect_gsi">开始检测 GSI 版本</string>
+    <string name="detect_hint">点击上方按钮开始检测</string>
+    <string name="copy_link">复制链接</string>
+    <string name="open_dsu">打开 DSU</string>
+    <string name="enable_root_mode">启用 Root 模式</string>
+    <string name="donate">赞赏</string>
+    <string name="change_theme">更改主题色</string>
+
+    <!-- 赞赏弹窗专用 -->
+    <string name="donate_title">选择支付方式</string>
+    <string name="close">关闭</string>
+    <string name="wechat_qr">微信二维码</string>
+    <string name="alipay_qr">支付宝二维码</string>
+    <string name="donate_hint">长按图片保存二维码</string>
+
+
+</resources>
