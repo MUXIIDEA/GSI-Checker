@@ -16,9 +16,10 @@ dependencyResolutionManagement {
     repositories {
         google()
         mavenCentral()
+        // ↓↓↓ 加入 JitPack ↓↓↓
+        maven("https://jitpack.io")
     }
 }
 
 rootProject.name = "GSI-Checker"
 include(":app")
- 

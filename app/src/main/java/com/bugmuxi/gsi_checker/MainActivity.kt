@@ -24,6 +24,11 @@ import androidx.core.content.edit
 import java.util.Locale
 import androidx.core.net.toUri
 import androidx.core.graphics.drawable.toDrawable
+import androidx.lifecycle.lifecycleScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import com.topjohnwu.superuser.Shell
 
 class MainActivity : AppCompatActivity() {
     //初始化与主题设置
@@ -297,31 +302,60 @@ class MainActivity : AppCompatActivity() {
 
     @SuppressLint("SetTextI18n")
     private fun detectRootInfo() {
-        Thread {
-            val kernelVersion = executeRootCommand("uname -r") ?: "未知"
-            val rootManager = detectRootManager()
-            val selinuxStatus = executeRootCommand("getenforce") ?: "未知"
+        // 1. 先拿到 root（libsu 缓存，后续可复用）
+        Shell.getShell {
+            // 2. 真正耗时的命令放到 IO 线程
+            lifecycleScope.launch(Dispatchers.IO) {
+                val kernel   = Shell.cmd("uname -r").exec().out.firstOrNull() ?: "未知"
+                val rootImpl = when (Shell.cmd("which su").exec().out.firstOrNull()) {
+                    null -> "未知"
+                    else -> {
+                        val p = Shell.cmd("which su").exec().out.first()
+                        when {
+                            p.contains("magisk") -> "Magisk"
+                            p.contains("ksu")    -> "KernelSU"
+                            p.contains("superuser") -> "SuperSU"
+                            else -> "其它 ($p)"
+                        }
+                    }
+                }
+                val selinux  = Shell.cmd("getenforce").exec().out.firstOrNull() ?: "未知"
 
-            // 获取 Magisk 版本（如果存在）
-            val magiskVersion = executeRootCommand("magisk --version 2>/dev/null")?.let { "Magisk $it" }
+                // Magisk 四项
+                val magiskCode = Shell.cmd("magisk -V").exec().out.firstOrNull() ?: "?"
+                val magiskName = Shell.cmd("magisk -v").exec().out.firstOrNull() ?: "?"
+                val zygiskOn   = Shell.cmd("[[ -f /data/adb/zygisk/enabled ]] && echo 1").exec().out.firstOrNull() == "1"
+                val ramExist   = Shell.cmd("[[ -f /data/adb/ramdisk.img ]] && echo 1").exec().out.firstOrNull() == "1"
+                val pkgName    = Shell.cmd("cat /data/adb/magisk/magisk_app").exec().out.firstOrNull()
+                    ?: "io.github.huskydg.magisk"
 
-            runOnUiThread {
-                val tvResult = findViewById<TextView>(R.id.tvResult)
-                val originalText = tvResult.text.toString()
+                val magiskInfo = """
+                Magisk 版本：$magiskName ($magiskCode)
+                Zygisk：${if (zygiskOn) "否" else "是"}
+                Ramdisk：${if (ramExist) "否" else "是"}
+                包名：$pkgName
+            """.trimIndent()
 
-                // 避免重复追加
-                if (!originalText.contains("=== Root 信息 ===")) {
-                    val rootInfo = "\n\n=== Root 信息 ===\n" +
-                            "内核版本：$kernelVersion\n" +
-                            "Root 管理器：$rootManager\n" +
-                            "SELinux 状态：$selinuxStatus" +
-                            (magiskVersion?.let { "\n$it" } ?: "")
+                val rootInfo = """
+                
+                === Root 信息 ===
+                内核版本：$kernel
+                Root 管理器：$rootImpl
+                SELinux 状态：$selinux
+                
+                === Magisk 信息 ===
+                $magiskInfo
+            """.trimIndent()
 
-                    tvResult.text = originalText + rootInfo
-                    Toast.makeText(this, "Root 信息已加载", Toast.LENGTH_SHORT).show()
+                // 3. 切回主线程刷新 UI
+                withContext(Dispatchers.Main) {
+                    val tv = findViewById<TextView>(R.id.tvResult)
+                    if (!tv.text.contains("=== Root 信息 ==="))
+                        tv.append(rootInfo)
+                    Toast.makeText(this@MainActivity, "Root 信息已加载", Toast.LENGTH_SHORT).show()
                 }
             }
-        }.start()
+        }
     }
 
     //捐赠系统
